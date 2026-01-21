@@ -12,4 +12,4 @@ const validateBody = (schema) => (req, res, next) => {
   next();
 };
 
-module.exports = { validateBody };
+module.exports = validateBody;
