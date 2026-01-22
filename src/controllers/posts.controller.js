@@ -1,4 +1,3 @@
-const AppError = require("../errors/AppError");
 const {
   createPost,
   getPosts,
@@ -69,8 +68,8 @@ const deletePostController = async (req, res) => {
   const { id } = req.params;
   const { uid } = req.user;
 
-  const status = await deletePost({ id, uid });
-  res.status(204).json({ status });
+  const post = await deletePost({ id, uid });
+  res.status(200).json({ post, message: "deleted" });
 };
 
 module.exports = {

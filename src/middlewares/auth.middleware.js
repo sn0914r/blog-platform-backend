@@ -1,14 +1,12 @@
-const { auth } = require("firebase-admin");
+const jwt = require("jsonwebtoken");
 const AppError = require("../errors/AppError");
 
-const verifyAuth = (req, res, next) => {
-  if (!req.headers?.authorization?.startsWith("Bearer ")) {
-    throw new AppError("Not authorized", 400);
-  }
+const verifyAuth = async (req, res, next) => {
+  const token = req.cookies?.token;
+  if (!token) throw new AppError("Not authorized", 401);
 
-  const token = req.headers.authorization.split(" ")[1];
-  const decodedToken = auth.verifyIdToken(token);
-  req.user = decodedToken;
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  req.user = decoded;
 
   next();
 };

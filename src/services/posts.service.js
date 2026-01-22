@@ -1,11 +1,11 @@
-const DB = require("../db/mockDB");
 const AppError = require("../errors/AppError");
-const generateRandomString = require("../utils/randomStringGenerator");
+const { PostModel } = require("../modals/Post");
 
-const getPost = (uid, id) => {
+const getPost = async (uid, id) => {
   if (!id) throw new AppError("Post not found", 404);
 
-  const post = DB.find((post) => post.id === id);
+  const post = await PostModel.findById(id);
+  if (!post) throw new AppError("Post not found", 404);
 
   if (post.status === "published") return post;
   if (post.authorId === uid) return post;
@@ -14,44 +14,48 @@ const getPost = (uid, id) => {
 };
 
 const getPosts = async (uid) => {
+  let posts;
+
   if (uid) {
-    return DB.filter((post) => post.authorId === uid);
+    posts = await PostModel.find({ authorId: uid }).sort({ createdAt: -1 });
+    return posts;
   }
 
-  return DB.filter((post) => post.status === "published");
+  posts = await PostModel.find({ status: "published" }).sort({ createdAt: -1 });
+  return posts;
 };
 
 const createPost = async ({ title, content, tags, status, authorId }) => {
-  const timestamp = Date.now();
-
-  DB.push({
-    id: generateRandomString(),
+  const post = await PostModel.create({
     title,
     content,
     tags,
     status,
     authorId,
-    createdAt: timestamp,
-    updatedAt: timestamp,
   });
 
-  return DB[DB.length - 1];
-};
-
-const updatePost = ({id, uid, updates}) => {
-  const post = DB.find((post) => post.id === id);
-  if (post.authorId !== uid) throw new AppError("Not authorized", 400);
-  post.updatedAt = Date.now();
-  Object.assign(post, updates);
   return post;
-
 };
 
-const deletePost = ({id, uid}) => {
-  const post = DB.find((post) => post.id === id);
-  if (post.authorId !== uid) throw new AppError("Not authorized", 400);
-  DB.splice(DB.indexOf(post), 1);
-  return "deleted";
+const updatePost = async ({ id, uid, updates }) => {
+  const post = await PostModel.findOneAndUpdate(
+    { _id: id, authorId: uid },
+    { $set: updates },
+    { new: true, runValidators: true },
+  );
+
+  if (!post) throw new AppError("Post not found", 404);
+  return post;
+};
+
+const deletePost = async ({ id, uid }) => {
+  const deletedPost = await PostModel.findOneAndDelete({
+    _id: id,
+    authorId: uid,
+  });
+
+  if (!deletedPost) throw new AppError("Post not found", 404);
+  return deletedPost;
 };
 
 module.exports = {
