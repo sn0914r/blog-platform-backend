@@ -6,13 +6,26 @@ const {
   updatePostController,
   deletePostController,
 } = require("../controllers/posts.controller");
-const validateBody = require("../middlewares/validate.middleware");
+const {
+  validateBody,
+  validateFiles,
+} = require("../middlewares/validate.middleware");
 const verifyAuth = require("../middlewares/auth.middleware");
 const { postSchema, postSchemaUPDATE } = require("../validations/post.schema");
+const parseMultipartJson = require("../middlewares/parseMultiPart.middleware");
+const upload = require("../middlewares/multer.middleware");
 
 const router = express.Router();
 
-router.post("/posts", verifyAuth,validateBody(postSchema), createPostController);
+router.post(
+  "/posts",
+  verifyAuth,
+  upload,
+  validateFiles,
+  parseMultipartJson,
+  validateBody(postSchema),
+  createPostController,
+);
 
 router.get("/posts", verifyAuth, getPostsController);
 router.get("/posts/:id", verifyAuth, getPostController);

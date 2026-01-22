@@ -38,6 +38,7 @@ const getPostController = async (req, res) => {
 const createPostController = async (req, res) => {
   const { title, content, tags, status } = req.body;
   const { uid } = req.user;
+  const { files } = req;
 
   const post = await createPost({
     title,
@@ -45,6 +46,7 @@ const createPostController = async (req, res) => {
     tags,
     status,
     authorId: uid,
+    files,
   });
 
   res.status(201).send(post);

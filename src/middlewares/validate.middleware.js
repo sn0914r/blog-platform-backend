@@ -12,4 +12,10 @@ const validateBody = (schema) => (req, res, next) => {
   next();
 };
 
-module.exports = validateBody;
+const validateFiles = (req, res, next) => {
+  // if (!req.files) {
+  //   throw new AppError("files not uploaded", 400);
+  // }
+  next();
+};
+module.exports = { validateBody, validateFiles };

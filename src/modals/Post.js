@@ -15,6 +15,10 @@ const PostSchema = new Schema(
       type: [String],
       required: false,
     },
+    images: {
+      type: [String],
+      required: false,
+    },
     status: {
       type: String,
       enum: ["draft", "published"],

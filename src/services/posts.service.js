@@ -1,5 +1,6 @@
 const AppError = require("../errors/AppError");
 const { PostModel } = require("../modals/Post");
+const uploadImages = require("./uploads.service");
 
 const getPost = async (uid, id) => {
   if (!id) throw new AppError("Post not found", 404);
@@ -25,13 +26,25 @@ const getPosts = async (uid) => {
   return posts;
 };
 
-const createPost = async ({ title, content, tags, status, authorId }) => {
+const createPost = async ({
+  title,
+  content,
+  tags,
+  status,
+  authorId,
+  files,
+}) => {
+  let uploads = [];
+  if (files || files.length > 0) {
+    uploads = await uploadImages(files);
+  }
   const post = await PostModel.create({
     title,
     content,
     tags,
     status,
     authorId,
+    images: uploads,
   });
 
   return post;
