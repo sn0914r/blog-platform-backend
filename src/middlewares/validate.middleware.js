@@ -13,9 +13,9 @@ const validateBody = (schema) => (req, res, next) => {
 };
 
 const validateFiles = (req, res, next) => {
-  // if (!req.files) {
-  //   throw new AppError("files not uploaded", 400);
-  // }
+  if (!req.files) {
+    throw new AppError("files not uploaded", 400);
+  }
   next();
 };
 module.exports = { validateBody, validateFiles };
