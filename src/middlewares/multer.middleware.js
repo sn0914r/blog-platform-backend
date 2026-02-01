@@ -1,5 +1,18 @@
 const multer = require("multer");
+const AppError = require("../errors/AppError");
 
+
+/**
+ * @desc Uploads one or more images
+ * 
+ * Effects:
+ *  - Attaches files to req.files
+ * 
+ * Blocks When:
+ *  - Each file size is greater than 5MB
+ *  - Number of files is greater than 5
+ *  - File is not an image
+ */
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {

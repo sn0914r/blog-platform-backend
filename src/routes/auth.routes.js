@@ -9,6 +9,7 @@ const {
 
 const router = express.Router();
 
+// Public
 router.post("/register", validateBody(RegisterSchema), registerUserController);
 router.post("/login", validateBody(LoginSchema), loginUserController);
 router.post("/logout", logoutUserController);

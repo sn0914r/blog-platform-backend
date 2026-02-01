@@ -1,5 +1,14 @@
 const AppError = require("../errors/AppError");
 
+/**
+ * @desc Parses multipart JSON data
+ * 
+ * Effects:
+ *  - Attaches JSON data to req.body
+ * 
+ * Blocks When:
+ *  - "data" field is not found
+ */
 const parseMultipartJson = (req, res, next) => {
   let data = req.body.data;
 

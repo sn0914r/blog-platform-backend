@@ -1,13 +1,10 @@
 const { registerUser, loginUser } = require("../services/auth.service");
 
 /**
- * Register a new user and log them in by setting JWT in httpOnly cookie.
+ * @desc Registers a new user and sets JWT in httpOnly cookie
  *
- * Flow:
- *  1. Read email, password, username from request body.
- *  2. Create user (service handles hashing + DB save).
- *  3. Generate JWT token.
- *  4. Set token in httpOnly cookie and return success response
+ * @route POST /auth/register
+ * @access Public
  */
 const registerUserController = async (req, res) => {
   const { email, password, username } = req.body;
@@ -19,12 +16,10 @@ const registerUserController = async (req, res) => {
 };
 
 /**
- * Login a user and log them in by setting JWT in httpOnly cookie.
+ * @desc Logs in a user and sets JWT in httpOnly cookie
  *
- * Flow:
- *  1. Read email, password from request body.
- *  2. Generate JWT token.
- *  3. Set token in httpOnly cookie and return success response
+ * @route POST /auth/login
+ * @access Public
  */
 const loginUserController = async (req, res) => {
   const { email, password } = req.body;
@@ -36,11 +31,10 @@ const loginUserController = async (req, res) => {
 };
 
 /**
- * Log out a user by clearing httpOnly cookie.
+ * @desc Logs out a user and clears httpOnly cookie
  *
- * Flow:
- *  1. Clear httpOnly cookie
- *  2. Return success response
+ * @route POST /auth/logout
+ * @access Public
  */
 const logoutUserController = (req, res) => {
   res.clearCookie("token", {

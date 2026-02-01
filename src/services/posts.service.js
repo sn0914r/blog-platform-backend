@@ -1,7 +1,20 @@
 const AppError = require("../errors/AppError");
+const { uploadImages } = require("../integrations/uploads.service");
 const { PostModel } = require("../modals/Post");
-const uploadImages = require("./uploads.service");
 
+/**
+ * @desc Retrives a specific post
+ *
+ * Behavior:
+ *  - Retrives published posts for authenticated and unauthenticated users
+ *  - Retrives draft posts only for the post owner
+ *
+ * Fails when:
+ *  - Post not found
+ *  - Not authorized (for draft posts)
+ *
+ * @returns {Promise<Post>}
+ */
 const getPost = async (uid, id) => {
   if (!id) throw new AppError("Post not found", 404);
 
@@ -14,6 +27,15 @@ const getPost = async (uid, id) => {
   throw new AppError("Not authorized", 400);
 };
 
+/**
+ * @desc Retrives all posts
+ *
+ * Behavior:
+ *  - Retrives published posts for authenticated and unauthenticated users
+ *  - Retrives published and draft posts only for the posts owner
+ *
+ * @returns {Promise<Post[]>}
+ */
 const getPosts = async (uid) => {
   let posts;
 
@@ -26,6 +48,15 @@ const getPosts = async (uid) => {
   return posts;
 };
 
+/**
+ * @desc Creates a new post
+ *
+ * Side Effects:
+ *  - Uploads images to cloudinary
+ *  - Creates a new post
+ *
+ * @returns {Promise<Post>}
+ */
 const createPost = async ({
   title,
   content,
@@ -50,6 +81,17 @@ const createPost = async ({
   return post;
 };
 
+/**
+ * @desc Updates a post only for the post owner
+ *
+ * Side Effects:
+ *  - Updates a post
+ *
+ * Fails when:
+ *  - Post not found
+ *
+ * @returns {Promise<Post>}
+ */
 const updatePost = async ({ id, uid, updates }) => {
   const post = await PostModel.findOneAndUpdate(
     { _id: id, authorId: uid },
@@ -61,6 +103,17 @@ const updatePost = async ({ id, uid, updates }) => {
   return post;
 };
 
+/**
+ * @desc Deletes a post only for the post owner
+ *
+ * Side Effects:
+ *  - Deletes a post
+ *
+ * Fails when:
+ *  - Post not found
+ *
+ * @returns {Promise<Post>}
+ */
 const deletePost = async ({ id, uid }) => {
   const deletedPost = await PostModel.findOneAndDelete({
     _id: id,

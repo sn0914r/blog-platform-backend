@@ -1,6 +1,14 @@
 const cloudinary = require("../configs/cloudinary.config");
 const randomStringGenerator = require("../utils/randomStringGenerator");
 
+/**
+ * @desc uploads one or more images
+ *
+ * Side Effects:
+ *  - Uploads images to cloudinary
+ *
+ * @returns {Promise<string[]>} Array of image URLs
+ */
 const uploadImages = async (files) => {
   const uploadedFiles = [];
 
@@ -21,4 +29,4 @@ const uploadImages = async (files) => {
   return uploadedFiles;
 };
 
-module.exports = uploadImages;
+module.exports = { uploadImages };

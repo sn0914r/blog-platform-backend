@@ -1,3 +1,6 @@
+/**
+ * @desc Global error handler
+ */
 const errorMiddleware = (error, _req, res, _next) => {
   const status = error.status || 500;
   const isProd = process.env.NODE_ENV === "production";

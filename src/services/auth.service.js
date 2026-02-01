@@ -4,15 +4,16 @@ const { UserModel } = require("../modals/User");
 const AppError = require("../errors/AppError");
 
 /**
- * Registers new User
+ * @desc Registers a new user
  *
- * Flow:
- *  1. Check if email already exists
- *  2. Hash password
- *  3. Create new user
- *  4. Create JWT
+ * Side Effects:
+ *  - Creates a new user
+ *  - Generates JWT
  *
- * @returns {string} JWT
+ * Fails when:
+ *  - User's email already exists
+ * 
+ * @returns {Promsie<string>} JWT
  */
 const registerUser = async ({ email, password, username }) => {
   const existingUser = await UserModel.exists({ email });
@@ -34,14 +35,16 @@ const registerUser = async ({ email, password, username }) => {
 };
 
 /**
- * Logins in User
- *
- * Flow:
- *  1. Check if user exists
- *  2. Check if password is correct
- *  3. Create JWT
- *
- * @returns {string} JWT
+ * @desc Logs in a user
+ * 
+ * Side Effects:
+ *  - Generates JWT
+ * 
+ * Fails when:
+ *  - User does not exist
+ *  - Password is incorrect
+ * 
+ * @returns {Promise<string>} JWT
  */
 const loginUser = async ({ email, password }) => {
   const user = await UserModel.findOne({ email });
